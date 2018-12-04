@@ -97,3 +97,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# log.txt for testing
+.txt

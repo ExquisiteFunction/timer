@@ -2,30 +2,35 @@ import datetime
 
 class Timer(object):
     """docstring for Timer"""
-    def __init__(self, arg):
+    def __init__(self):
         super(Timer, self).__init__()
         #self.arg = arg
         a = datetime.datetime.now()
         self.logname = str(a.year) + '-' + str(a.month) + '-' + str(a.day) + ".txt"
-        #print(logname)
-        self.logfile = open(logname, "a")
+        self.logfile = open(self.logname, "a")
         self.oldact = "start"
         self.newact = ""
         self.oldtime = a
         self.newtime = 0
 
+    def update(self, line):
+        self.newact = line
+        self.newtime = datetime.datetime.now()
+        message = ""
+        message += self.oldact + "\t" + str(self.oldtime) + "\t" + \
+                str(self.newtime) + "\t" + \
+                str((self.newtime - self.oldtime).seconds) + "\n"
+        self.logfile.write(message)
+        self.oldact = self.newact
+        self.oldtime = self.newtime
+
+    def stop(self):
+        self.logfile.close()
+
 
 def main():
 
-    a = datetime.datetime.now()
-    logname = str(a.year) + '-' + str(a.month) + '-' + str(a.day) + ".txt"
-    #print(logname)
-    logfile = open(logname, "a")
-
-    oldact = "start"
-    newact = ""
-    oldtime = a
-    newtime = 0
+    timer = Timer()
 
     while 1:
         line = input()
@@ -34,17 +39,10 @@ def main():
         if line == "":
             continue
 
-        newact = line
-        newtime = datetime.datetime.now()
-        message = ""
-        message += oldact + "\t" + str(oldtime) + "\t" + \
-                str(newtime) + "\t" + str((newtime - oldtime).seconds) + "\n"
-        logfile.write(message)
-        oldact = newact
-        oldtime = newtime
+        timer.update(line)
 
         if line == "stop":
-            logfile.close()
+            timer.stop()
             break
 
 if __name__ == '__main__':
