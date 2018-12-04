@@ -1,4 +1,5 @@
 import datetime 
+import argparse
 
 class Timer(object):
     """docstring for Timer"""
@@ -26,9 +27,20 @@ class Timer(object):
 
     def stop(self):
         self.logfile.close()
+        
 
 
 def main():
+
+    descStr = "\n  This program is used to time what you do in a daily routing. \n"
+    descStr += "  Obviously, without hardware support, what you actually do is only what you say.\n"
+    descStr += "  But the programm, which always runs in a single console quietly, may \n"
+    descStr += "  give you some pressure to force on what you really do.\n\n"
+
+    parser = argparse.ArgumentParser(description=descStr)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--h', help=descStr)
+    args = parser.parse_args()
 
     timer = Timer()
 
