@@ -99,4 +99,4 @@ ENV/
 .mypy_cache/
 
 # log.txt for testing
-.txt
+/log/*.txt
