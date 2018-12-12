@@ -56,12 +56,37 @@ class Timer(object):
             #TODO
 
     def insert(self, date, iterm, starttime, stoptime):
-        pass
+        for dirpath, dirnames, filenames in os.walk(os.getcwd() + "/../log/"):
+            for filepath in filenames:
+                l = []
+                with open(os.path.join(dirpath, filepath), 'a') as f:
+                    for line in f.readlines():
+                        entry = line.split("\t")
+                        event = Event()
+                        event.name = entry[0].lower()
+                        event.start_time = datetime.datetime.strptime(entry[1], "%Y-%m-%d %H:%M:%S.%f")
+                        event.end_time = datetime.datetime.strptime(entry[2], "%Y-%m-%d %H:%M:%S.%f")
+                        event.duration = (event.end_time-event.start_time).seconds
+                        l.append(event)
+                lines = ""
+                for e in l:
+                    if (e.start_time < starttime) and (e.end_time > starttime):
+                        event = Event()
+                        event.name = iterm
+                        event.start_time = starttime
+                        event.end_time = e.end_time
+                        event.duration = (event.end_time-event.start_time).seconds
+                        e.end_time = starttime
+                        e.duration = (e.end_time-e.start_time).seconds
+                        lines += e.name+"\t"+str(e.start_time)+"\t"+str(e.end_time)+"\t"+str(e.datetime)+"\n"
+                        lines += event.name+"\t"+str(event.start_time)+"\t"+str(event.end_time)+"\t"+str(event.datetime)+"\n"
+                    else:
+                        lines += e.name+"\t"+str(e.start_time)+"\t"+str(e.end_time)+"\t"+str(e.datetime)+"\n"
+                with open(os.path.join(dirpath, filepath), 'w') as f:
+                    f.write(lines)
+        return
 
     def statistics(self, iterm, start_date, end_date):
-        #start_date = datetime.datetime.strptime(start_date,"%Y-%m-%d")
-        #end_date = datetime.datetime.strptime(end_date,"%Y-%m-%d")
-
         l = []
         for dirpath, dirnames, filenames in os.walk(os.getcwd() + "/../log/"):
             for filepath in filenames:
@@ -80,3 +105,7 @@ class Timer(object):
         print(duration, "seconds.")
         print(duration/3600.0, "hours.")
         return duration
+
+
+#start_date = datetime.datetime.strptime(start_date,"%Y-%m-%d")
+#end_date = datetime.datetime.strptime(end_date,"%Y-%m-%d")
