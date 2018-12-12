@@ -1,6 +1,6 @@
 import argparse
 
-from Timer import Timer
+from Timer import Timer, Event
 
 def argsParse():
     descStr = "\n  This program is used to time what you do in a daily routing. \n"
@@ -35,7 +35,7 @@ def main():
     timer = Timer()
 
     if args.duration:
-        print(args.duration)
+        # print(args.duration)
         d = int(args.duration[:-1])
         if args.type in ['txt', 'audio']:
             timer.alarm(d, args.type)
@@ -45,7 +45,7 @@ def main():
 
     while 1:
         line = input()
-        if line ~= "":
+        if line != "":
             timer.update(line)
             if line == "stop":
                 timer.stop()
