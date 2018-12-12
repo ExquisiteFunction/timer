@@ -1,48 +1,6 @@
-import datetime 
 import argparse
 
-class Timer(object):
-    """docstring for Timer"""
-    def __init__(self):
-        super(Timer, self).__init__()
-        #self.arg = arg
-        self.logname = str(datetime.date.today()) + ".txt"
-        self.logfile = open("../log/" + self.logname, "a")
-        self.oldact = "start"
-        self.newact = ""
-        self.oldtime = datetime.datetime.now()
-        self.newtime = 0
-        return 
-
-    def update(self, line):
-        self.newact = line
-        self.newtime = datetime.datetime.now()
-        message = self.oldact + "\t"
-        message += str(self.oldtime) + "\t"
-        message += str(self.newtime) + "\t"
-        message += str((self.newtime - self.oldtime).seconds) + "\n"
-        self.logfile.write(message)
-        self.oldact = self.newact
-        self.oldtime = self.newtime
-        return
-
-    def stop(self):
-        self.logfile.close()
-        return
-
-    def alarm(self, duration, mode):
-        import time
-        time.sleep(duration)
-        
-        if "txt" == mode:
-            print("Time out.\n")
-        elif "audio" == mode:
-            from pygame import mixer
-            mixer.init()
-            mixer.music.load('../Wake-up-sounds/Wake-up-sounds.mp3')
-            mixer.music.play()
-            time.sleep(2)
-        return
+from Timer import Timer, Event
 
 def argsParse():
     descStr = "\n  This program is used to time what you do in a daily routing. \n"
@@ -70,14 +28,14 @@ def main():
 
     args = argsParse()
     
-    timer = Timer()
-
     if args.v:
-        print("Version 0.3.")
+        print("Version 0.4.")
         return
 
+    timer = Timer()
+
     if args.duration:
-        print(args.duration)
+        # print(args.duration)
         d = int(args.duration[:-1])
         if args.type in ['txt', 'audio']:
             timer.alarm(d, args.type)
@@ -87,15 +45,11 @@ def main():
 
     while 1:
         line = input()
-
-        if line == "":
-            continue
-
-        timer.update(line)
-
-        if line == "stop":
-            timer.stop()
-            break
+        if line != "":
+            timer.update(line)
+            if line == "stop":
+                timer.stop()
+                break
 
 if __name__ == '__main__':
     main()
